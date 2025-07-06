@@ -1,1 +1,2 @@
 pdfplumber
+pip install pymorphy2
