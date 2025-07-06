@@ -128,7 +128,7 @@ def extract_order_data(text):
 
 if __name__ == "__main__":
     # Путь к файлу приказа
-    file_path = "/Users/azatmuginov/business_trip_report/data/sample_pdfs/order.pdf"
+    file_path = "data/sample_pdfs/order.pdf"
     
     # Парсинг текста из PDF
     parsed_text = parse_pdf(file_path)
