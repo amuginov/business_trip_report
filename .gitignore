@@ -4,3 +4,5 @@ functional_requirements.txt
 read_files.py
 # Ignore Python cache files
 __pycache__/
+subagents
+documentation

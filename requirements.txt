@@ -1,2 +1,3 @@
 pdfplumber
-pip install pymorphy2
+pymorphy2
+sqlalchemy
