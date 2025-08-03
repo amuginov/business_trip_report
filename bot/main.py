@@ -1,24 +1,19 @@
-# FILE: /advance-report-bot/advance-report-bot/bot/main.py
+# filepath: bot/main.py
+from aiogram import Bot, Dispatcher
+from bot.config import BOT_TOKEN
+from bot.services.database import init_db
+from bot.handlers import admin, user, guest, common  # добавьте common
 
-from aiogram import Bot, Dispatcher, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.utils import executor
-from handlers import admin_handlers, user_handlers, guest_handlers
-import os
-from dotenv import load_dotenv
+def main():
+    init_db()
+    bot = Bot(token=BOT_TOKEN)
+    dp = Dispatcher()
+    dp.include_router(admin.router)
+    dp.include_router(user.router)
+    dp.include_router(guest.router)
+    dp.include_router(common.router)  # регистрация роутера common
+    print("Bot started. Polling...")
+    dp.run_polling(bot)
 
-load_dotenv()
-
-API_TOKEN = os.getenv("API_TOKEN")
-
-bot = Bot(token=API_TOKEN)
-storage = MemoryStorage()
-dp = Dispatcher(bot, storage=storage)
-
-# Register handlers
-admin_handlers.register_handlers(dp)
-user_handlers.register_handlers(dp)
-guest_handlers.register_handlers(dp)
-
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+if __name__ == "__main__":
+    main()

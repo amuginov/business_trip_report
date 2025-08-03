@@ -1,3 +1,6 @@
 pdfplumber
 pymorphy2
 sqlalchemy
+openpyxl
+python-dotenv
+aiogram

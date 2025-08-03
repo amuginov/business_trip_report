@@ -1,35 +1,25 @@
-from openpyxl import load_workbook
-from openpyxl.utils import get_column_letter
+import openpyxl
+import shutil
+import os
 
-def generate_excel_report(data, template_path, output_path):
-    """
-    Generates an Excel report based on the provided data and template.
+def generate_report(output_path):
+    # Пути к шаблону и новому файлу
+    template_path = os.path.join('data', 'report_template.xlsx')
+    report_path = output_path
 
-    :param data: Dictionary containing the data to populate the report.
-    :param template_path: Path to the Excel template file.
-    :param output_path: Path where the generated report will be saved.
-    """
-    # Load the template workbook
-    workbook = load_workbook(template_path)
-    sheet = workbook.active
+    # Копируем шаблон, чтобы не портить оригинал
+    shutil.copy(template_path, report_path)
 
-    # Populate the template with data
-    for row_index, (key, value) in enumerate(data.items(), start=2):  # Start from row 2 to skip header
-        sheet[f'A{row_index}'] = key  # Assuming keys are written in column A
-        sheet[f'B{row_index}'] = value  # Assuming values are written in column B
+    # Открываем скопированный файл
+    wb = openpyxl.load_workbook(report_path)
+    ws = wb.active
 
-    # Adjust column widths
-    for column in sheet.columns:
-        max_length = 0
-        column = [cell for cell in column]
-        for cell in column:
-            try:
-                if len(str(cell.value)) > max_length:
-                    max_length = len(cell.value)
-            except:
-                pass
-        adjusted_width = (max_length + 2)
-        sheet.column_dimensions[get_column_letter(column[0].column)].width = adjusted_width
+    # Вставляем текст в ячейку A6
+    ws['A6'] = 'ООО "АЛРОСА Информационные технологии"'
 
-    # Save the generated report
-    workbook.save(output_path)
+    # Сохраняем изменения
+    wb.save(report_path)
+
+if __name__ == "__main__":
+    generate_report('data/generated_report.xlsx')
+    print("Отчет сгенерирован и сохранен в data/generated_report.xlsx")

@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from bot.models import Base
+from bot.db.models import Base
 
-engine = create_engine('sqlite:///../data/database.db')
+engine = create_engine('sqlite:///data/database.db')
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def init_db():
