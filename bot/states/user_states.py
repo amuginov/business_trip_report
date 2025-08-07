@@ -20,3 +20,10 @@ class AdminUserCreationStates(StatesGroup):
 
 class UserDeletionStates(StatesGroup):
     waiting_for_telegram_id = State()
+
+class AdvanceReportStates(StatesGroup):
+    waiting_for_order_pdf = State()
+    waiting_for_ticket_pdf = State()
+    waiting_for_more_tickets = State()
+    waiting_for_manual_ticket_data = State()
+    processing = State()
