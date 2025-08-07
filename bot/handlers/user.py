@@ -6,6 +6,7 @@ from bot.keyboards.user import user_keyboard, more_tickets_keyboard
 from bot.services.excel_generator import generate_report
 from bot.db.crud import get_user_by_telegram_id  # добавьте импорт
 from bot.parsers.order_parser import parse_pdf, extract_order_data  # импорт парсера
+from bot.parsers.continent_ticket_parser import parse_pdf as parse_ticket_pdf, extract_ticket_data
 
 router = Router()
 
@@ -30,7 +31,18 @@ async def get_order_pdf(message: Message, state: FSMContext):
 
 @router.message(AdvanceReportStates.waiting_for_ticket_pdf, F.document)
 async def get_ticket_pdf(message: Message, state: FSMContext):
-    # Скачайте файл, вызовите парсер билета, добавьте результат в список билетов в state
+    # Скачайте файл билета
+    file_info = await message.bot.get_file(message.document.file_id)
+    file_path = f"data/{message.document.file_name}"
+    await message.bot.download_file(file_info.file_path, file_path)
+    # Парсим билет
+    text = parse_ticket_pdf(file_path)
+    ticket_data = extract_ticket_data(text) if text else {}
+    # Добавляем данные билета в список билетов в state
+    data = await state.get_data()
+    tickets = data.get("tickets", [])
+    tickets.append(ticket_data)
+    await state.update_data(tickets=tickets)
     await message.answer("Есть ли еще билет?", reply_markup=more_tickets_keyboard())
     await state.set_state(AdvanceReportStates.waiting_for_more_tickets)
 
