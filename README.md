@@ -163,12 +163,16 @@ The project uses SQLite with the following tables:
 
 ## 🚀 Deployment
 
-For server deployment:
+For detailed secure VPS deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+Quick deployment steps:
 
 1. Ensure all dependencies are installed
 2. Configure environment variables
 3. Create administrator
 4. Run the bot using a process manager (e.g., systemd, supervisor, or PM2)
+
+For production deployment with security best practices, follow the comprehensive guide in the deployment documentation.
 
 ## 🤝 Contributing
 

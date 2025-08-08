@@ -6,6 +6,15 @@ read_files.py
 # Ignore Python cache files
 __pycache__/
 
+# Ignore macOS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
 # Ignore database files
 data/database.db
 *.db
@@ -16,6 +25,10 @@ data/database.db
 data/generated_report.xlsx
 data/*.xlsx
 data/*.pdf
+
+# Ignore personal files
+data/ETICKET_*
+data/*_MUGINOV_*
 
 # Documentation and scripts (keep local)
 subagents
@@ -28,3 +41,5 @@ MANUAL_SERVICE_SETUP.md
 test_bot.sh
 install_service.sh
 business-trip-bot.service
+init_database.sh
+ssh_config_*
