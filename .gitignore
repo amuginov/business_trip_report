@@ -2,8 +2,29 @@
 venv
 functional_requirements.txt
 read_files.py
+
 # Ignore Python cache files
 __pycache__/
+
+# Ignore database files
+data/database.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignore generated files
+data/generated_report.xlsx
+data/*.xlsx
+data/*.pdf
+
+# Documentation and scripts (keep local)
 subagents
 documentation
 scripts
+DEPLOYMENT.md
+FINAL_DEPLOYMENT.md
+DEPLOYMENT_STATUS.md
+MANUAL_SERVICE_SETUP.md
+test_bot.sh
+install_service.sh
+business-trip-bot.service
