@@ -46,25 +46,74 @@ def extract_ticket_data(text):
             data['ticket_number'] = None
             print("Не удалось извлечь значение 'ticket_number'.")
 
-        # Извлечение данных для 'ticket_price'
-        # Логика: ищем строку после "Fare Equiv. Taxes Total" и извлекаем цену после последнего RUB
-        price_section_match = re.search(
-            r'Fare Equiv\. Taxes Total\n(.*)',
-            text,
-            re.IGNORECASE
-        )
-        if price_section_match:
-            price_section = price_section_match.group(1).strip()
-            price_match = re.search(r'RUB.*?(\d{2}\s?\d{3})$', price_section)
-            if price_match:
-                data['ticket_price'] = price_match.group(1).strip().replace(" ", "")
-                print(f"Извлечено значение 'ticket_price': {data['ticket_price']}")
+        # Извлечение данных для 'ticket_price' - ОПТИМИЗИРОВАННЫЙ ПАРСЕР
+        # Множественные паттерны в порядке приоритета для максимальной точности
+        price_patterns = [
+            # Специальный паттерн для e-ticket_continent - число в конце строки после YQ
+            (0, r'YQ.*?(\d{2}\s\d{3})(?:\s*$|\s*\n)'),
+            
+            # Основной паттерн - цена в конце строки после YQ с RUB
+            (1, r'(?:YQ.*?)?(\d{2}[\s,]?\d{3})\s*RUB(?:\s*$|\s*[\n;])'),
+            
+            # Цена в формате XX XXX RUB в конце строки
+            (2, r'(\d{2}[\s,]?\d{3})\s*RUB\s*$'),
+            
+            # Цена после множественных RUB
+            (3, r'RUB.*?(\d{2}[\s,]?\d{3})\s*RUB'),
+            
+            # Универсальный - любая большая цена с RUB
+            (4, r'(?:^|\s)(\d{2}[\s,]?\d{3})\s*RUB(?:\s|$)'),
+            
+            # Оригинальный паттерн для совместимости
+            (5, r'RUB.*?(\d{2}\s?\d{3})$')
+        ]
+        
+        all_prices = []
+        
+        # Пробуем все паттерны и собираем результаты
+        for priority, pattern in price_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE | re.MULTILINE)
+            
+            for match in matches:
+                cleaned = re.sub(r'[^\d]', '', str(match))
+                if cleaned and len(cleaned) >= 4:  # Минимум 4 цифры
+                    all_prices.append({
+                        'priority': priority,
+                        'cleaned': cleaned,
+                        'value': int(cleaned)
+                    })
+        
+        if all_prices:
+            # Группируем по ценам
+            price_groups = {}
+            for price_info in all_prices:
+                price = price_info['cleaned']
+                if price not in price_groups:
+                    price_groups[price] = []
+                price_groups[price].append(price_info)
+            
+            # Выбираем лучшую цену по приоритету, при равном приоритете - большую
+            best_price = None
+            best_priority = float('inf')
+            
+            for price, infos in price_groups.items():
+                min_priority = min(info['priority'] for info in infos)
+                price_value = int(price)
+                
+                if (min_priority < best_priority or 
+                    (min_priority == best_priority and price_value > int(best_price or '0'))):
+                    best_price = price
+                    best_priority = min_priority
+            
+            if best_price:
+                data['ticket_price'] = best_price
+                print(f"Извлечено значение 'ticket_price': {data['ticket_price']} (приоритет: {best_priority})")
             else:
                 data['ticket_price'] = None
-                print("Не удалось извлечь значение 'ticket_price'.")
+                print("Не удалось выбрать оптимальную цену.")
         else:
             data['ticket_price'] = None
-            print("Не удалось найти секцию с ценой.")
+            print("Не удалось извлечь значение 'ticket_price'.")
 
         return data
     except AttributeError:
