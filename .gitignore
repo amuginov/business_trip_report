@@ -31,15 +31,54 @@ data/ETICKET_*
 data/*_MUGINOV_*
 
 # Documentation and scripts (keep local)
-subagents
-documentation
-scripts
+subagents/
+documentation/
+scripts/
 DEPLOYMENT.md
-FINAL_DEPLOYMENT.md
-DEPLOYMENT_STATUS.md
+DEPLOYMENT_REPORT_*.md
+DEPLOYMENT_STATUS*.md
+FINAL_DEPLOYMENT*.md
 MANUAL_SERVICE_SETUP.md
-test_bot.sh
-install_service.sh
-business-trip-bot.service
-init_database.sh
+*.sh
+*.service
 ssh_config_*
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Log files
+*.log
+logs/
+
+# Temporary and backup files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# OS specific
+.AppleDouble
+.LSOverride
+Icon?
+
+# Personal documents should not be committed to the repository.
+
+# Personal deployment files with sensitive info
+DEPLOYMENT.md
+*_REAL.md
+*_PRODUCTION.md
+ssh_config_*
+*.pem
+*.key
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Node modules (if any)
+node_modules/
